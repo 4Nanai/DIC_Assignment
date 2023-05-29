@@ -60,20 +60,19 @@ begin
     begin
         Temp <= DIN0 & DIN1 & DIN2 & DIN3 & DIN4 & DIN5 & DIN6 & DIN7 & DIN8 & DIN9 & DIN10 & DIN11; -- Write ADC signal into temperature
         Byte <= Device_ID & Temp; -- Merge Device ID and Temperature
+        AOUT1 <= '0';
+        AOUT2 <= '0';
+        AOUT3 <= '0';
         
         if Temp < Min_Temp or Temp > Max_Temp then
         AOUT1 <= '1'; -- illuminate Yellow LED
         AOUT2 <= '0';
         AOUT3 <= '0';
-        end if;
-
-        if Temp < Zero_Temp and Temp > Min_Temp then
+        elsif Temp < Zero_Temp and Temp > Min_Temp then
         AOUT1 <= '0'; 
         AOUT2 <= '1'; -- illuminate Red LED
         AOUT3 <= '0';
-        end if;
-
-        if Temp > Zero_Temp and Temp < Max_Temp then
+        elsif Temp > Zero_Temp and Temp < Max_Temp then
         AOUT1 <= '0'; 
         AOUT2 <= '0';
         AOUT3 <= '1'; -- illuminate Green LED
