@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Digital_Block is
     port (
-        DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7, DIN8, DIN9, DIN10, DIN11 : in std_logic; -- 12 bit ADC In, DIN0 (MSB), DIN11 (LSB)
+        DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7: in std_logic; -- 8 bit ADC In, DIN0 (MSB), DIN11 (LSB)
         CLK : in std_logic; -- External Clock In
         RST : in std_logic; -- Reset Signal
         DOUT1 : out std_logic; -- Serial Out
@@ -45,20 +45,20 @@ end Digital_Block;
 
 architecture Behavioral of Digital_Block is -- Declare architecture
 
-    signal Temp : std_logic_vector(11 downto 0); --Define a 12 bits signal containing temperature
-    constant Min_Temp : std_logic_vector(11 downto 0) := "000000001000"; -- Define a temperature of -25 Celsius Degree (Assuming 0000_1000)
-    constant Max_Temp : std_logic_vector(11 downto 0) := "000010000000"; -- Define a temperature of +75 Celsius Degree (Assuming 1000_0000)
-    constant Zero_Temp : std_logic_vector(11 downto 0) := "000000010000"; -- Define a temperature of 0 Degree (Assuming 0001_0000)
+    signal Temp : std_logic_vector(7 downto 0); --Define a 12 bits signal containing temperature
+    constant Min_Temp : std_logic_vector(7 downto 0) := "00001000"; -- Define a temperature of -25 Celsius Degree (Assuming 0000_0000_1000)
+    constant Max_Temp : std_logic_vector(7 downto 0) := "10000000"; -- Define a temperature of +75 Celsius Degree (Assuming 0000_1000_0000)
+    constant Zero_Temp : std_logic_vector(7 downto 0) := "00010000"; -- Define a temperature of 0 Degree (Assuming 0001_0000)
     constant Device_ID : std_logic_vector(3 downto 0) := "0001"; -- Define the Device ID (Assuming "1")
-    signal Byte : std_logic_vector(15 downto 0); -- Merge Device ID & Temperature
-    signal Right_Shift : std_logic_vector(15 downto 0); -- Right shift register
-    signal Counter : integer range 0 to 20000000 := 0; -- Define "20 seconds" (Assuming 1MHz clock frequency)
-    signal Serial_Out : integer range 0 to 15; -- Count for shift register
+    signal Byte : std_logic_vector(11 downto 0); -- Merge Device ID & Temperature
+    signal Right_Shift : std_logic_vector(11 downto 0); -- Right shift register
+    signal Counter : integer range 0 to 20 := 0; -- Define "20 seconds" (Assuming 1MHz clock frequency)
+    signal Serial_Out : integer range 0 to 11; -- Count for shift register
 
 begin
     process (CLK) -- Set CLK as sensitive signal
     begin
-        Temp <= DIN0 & DIN1 & DIN2 & DIN3 & DIN4 & DIN5 & DIN6 & DIN7 & DIN8 & DIN9 & DIN10 & DIN11; -- Write ADC signal into temperature
+        Temp <= DIN0 & DIN1 & DIN2 & DIN3 & DIN4 & DIN5 & DIN6 & DIN7; -- Write ADC signal into temperature
         Byte <= Device_ID & Temp; -- Merge Device ID and Temperature
         AOUT1 <= '0';
         AOUT2 <= '0';
@@ -83,13 +83,13 @@ begin
             Temp <= (others => '0');
         elsif rising_edge(CLK) then -- always @(clk posedge)
             Counter <= Counter + 1;
-            if Counter = 2000000 then -- If reaches 20 ms
+            if Counter = 20 then -- If reaches 20 ms
                 Counter <= 0; -- Reset Counter
-                Serial_Out <= 15; -- Set shift register counter to be 15 
+                Serial_Out <= 11; -- Set shift register counter to be 15 
                 Right_Shift <= Byte; -- Write byte into shift register 
             else -- If Counter != 2000
                 if Serial_Out > 0 then -- If Serial_Out != 0
-                    Right_Shift <= '0' & Right_Shift(15 downto 1); -- Right shift 1 bit
+                    Right_Shift <= '0' & Right_Shift(11 downto 1); -- Right shift 1 bit
                     Serial_Out <= Serial_Out - 1; -- Serial_Out -= 1;
                 end if;
             end if;
