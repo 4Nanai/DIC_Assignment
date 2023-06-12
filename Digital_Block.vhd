@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Digital_Block is
     port (
-        DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7: in std_logic; -- 8 bit ADC In, DIN0 (MSB), DIN7 (LSB)
+        DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7: in std_logic; -- 8 bit ADC In, DIN0 (MSB), DIN11 (LSB)
         CLK : in std_logic; -- External Clock In
         RST : in std_logic; -- Reset Signal
         DOUT1 : out std_logic; -- Serial Out
