@@ -32,8 +32,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 -- testbench for Digital_Block
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
 
 entity Digital_Block_tb is
 end Digital_Block_tb;
@@ -41,8 +39,8 @@ end Digital_Block_tb;
 architecture Behavioral of Digital_Block_tb is
 
     -- signals for DUT inputs and outputs
-    signal DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7, DIN8, DIN9, DIN10, DIN11 : std_logic; 
-    signal CLK : std_logic := '0'; 
+    signal DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7: std_logic; 
+    signal CLK : std_logic := '0'; -- Clock Signal
     signal RST : std_logic := '0'; -- Reset Signal
     signal DOUT1 : std_logic; 
     signal AOUT1 : std_logic;
@@ -52,7 +50,7 @@ architecture Behavioral of Digital_Block_tb is
     -- component declaration for DUT
     component Digital_Block is
         port (
-            DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7, DIN8, DIN9, DIN10, DIN11 : in std_logic; 
+            DIN0, DIN1, DIN2, DIN3, DIN4, DIN5, DIN6, DIN7: in std_logic; 
             CLK : in std_logic; 
             RST : in std_logic; -- Reset Signal
             DOUT1 : out std_logic; 
@@ -74,10 +72,6 @@ begin
         DIN5 => DIN5,
         DIN6 => DIN6,
         DIN7 => DIN7,
-        DIN8 => DIN8,
-        DIN9 => DIN9,
-        DIN10 => DIN10,
-        DIN11 => DIN11,
         CLK => CLK,
         RST => RST,
         DOUT1 => DOUT1,
@@ -94,65 +88,48 @@ begin
     process
     begin
         RST <= '1';
-        wait for 5 ns;
+        wait for 10 ns;
         RST <= '0';
-        wait for 19000000 ns;
-        -- first input value
-        DIN0 <= '0';
-        DIN1 <= '0';
-        DIN2 <= '0';
-        DIN3 <= '0';
-        DIN4 <= '0';
-        DIN5 <= '0';
-        DIN6 <= '0';
-        DIN7 <= '0';
-        DIN8 <= '0';
-        DIN9 <= '0';
-        DIN10 <= '1';
-        DIN11 <= '0';
-        wait for 2000000 ns;
-        -- second input value
+        -- first input value 0000_0110 = -36 Degree Celsius
         DIN0 <= '0';
         DIN1 <= '0';
         DIN2 <= '0';
         DIN3 <= '0';
         DIN4 <= '0';
         DIN5 <= '1';
-        DIN6 <= '0';
+        DIN6 <= '1';
         DIN7 <= '0';
-        DIN8 <= '0';
-        DIN9 <= '0';
-        DIN10 <= '1';
-        DIN11 <= '0';       
-        wait for 4000000 ns;
-        -- third input value
+        wait for 30 ns;
+        -- second input value 0010_0011 = -16.5 Degree Culsius
         DIN0 <= '0';
         DIN1 <= '0';
         DIN2 <= '1';
         DIN3 <= '0';
         DIN4 <= '0';
         DIN5 <= '0';
-        DIN6 <= '0';
-        DIN7 <= '0';
-        DIN8 <= '0';
-        DIN9 <= '0';
-        DIN10 <= '1';
-        DIN11 <= '0';
-        wait for 3000000 ns;
-        -- fourth input value
+        DIN6 <= '1';
+        DIN7 <= '1';
+        wait for 20 ns;
+        -- third input value 0111_0101 = 19.5 Degree Culsius
         DIN0 <= '0';
-        DIN1 <= '0';
-        DIN2 <= '0';
-        DIN3 <= '0';
+        DIN1 <= '1';
+        DIN2 <= '1';
+        DIN3 <= '1';
         DIN4 <= '0';
-        DIN5 <= '0';
+        DIN5 <= '1';
         DIN6 <= '0';
+        DIN7 <= '1';
+        wait for 40 ns;
+        -- fourth input value 1111_0110 = 84 Degree Celsius
+        DIN0 <= '1';
+        DIN1 <= '1';
+        DIN2 <= '1';
+        DIN3 <= '1';
+        DIN4 <= '0';
+        DIN5 <= '1';
+        DIN6 <= '1';
         DIN7 <= '0';
-        DIN8 <= '1';
-        DIN9 <= '1';
-        DIN10 <= '1';
-        DIN11 <= '1';
-        wait for 2000000 ns;
+        wait for 30 ns;
         -- stop the simulation
         assert false report "End of simulation" severity failure;
     end process;
